@@ -52,6 +52,15 @@ namespace FightingGame
             rig.ResetPose(facing);
         }
 
+        static readonly MoveData[] NetworkMoves = { null, MoveData.Punch, MoveData.Kick, MoveData.AirKick, MoveData.Special };
+        public FighterSnapshot CaptureNetwork() => new FighterSnapshot { x=X, y=Y, vx=VX, vy=VY, hp=HP, lag=LagHP, meter=Meter, t=T, comboT=ComboT, flash=flash, facing=Facing, state=(int)State, combo=Combo, move=System.Array.IndexOf(NetworkMoves, Move) };
+        public void ApplyNetwork(FighterSnapshot s) {
+            X=s.x; Y=s.y; VX=s.vx; VY=s.vy; HP=s.hp; LagHP=s.lag; Meter=s.meter; T=s.t;
+            ComboT=s.comboT; flash=s.flash; Facing=s.facing; State=(FState)s.state; Combo=s.combo;
+            Move = s.move >= 0 && s.move < NetworkMoves.Length ? NetworkMoves[s.move] : null;
+            if (State == FState.Attack && Move == null) State = FState.Idle;
+        }
+
         void SetState(FState s) { State = s; T = 0; }
 
         void StartMove(MoveData m)

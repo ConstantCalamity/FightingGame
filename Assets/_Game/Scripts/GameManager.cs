@@ -26,6 +26,7 @@ namespace FightingGame
         public Fighter P2 { get; private set; }
 
         readonly List<Orb> orbs = new List<Orb>();
+        OnlineMatch online;
         HumanInput input1, input2;
         AIController ai2, ai1;
         Effects fx;
@@ -77,6 +78,8 @@ namespace FightingGame
             camBase = new Vector3(0, 2.6f, -9);
             camLook = new Vector3(0, 1.2f, 0);
             StartMatch();
+            online = gameObject.AddComponent<OnlineMatch>();
+            online.Initialize(this);
         }
 
         // ---------- Match flow ----------
@@ -96,6 +99,8 @@ namespace FightingGame
             phase = Phase.Intro; phaseT = 0; timer = RoundTime; winner = null; fightShown = false;
             timeScale = 1; slowmoT = 0;
             input1.ClearBuffer(); input2.ClearBuffer();
+            online?.RemoteInput.Clear();
+            freeze = shakeAmt = comboHide = 0;
             Announce($"ROUND {round}");
         }
 
@@ -149,6 +154,12 @@ namespace FightingGame
         void Update()
         {
             float real = Mathf.Min(Time.unscaledDeltaTime, 1f / 20f);
+            online.PollClient();
+            if (online.Online && (!online.IsHost || !online.Ready)) {
+                P1.UpdateVisual(real, clock); P2.UpdateVisual(real, clock);
+                fx.Tick(real); UpdateCamera(real); debugView.Tick(ShowHitboxes, P1, P2, orbs);
+                return;
+            }
             HandleMetaKeys();
             input1.Poll();
             input2.Poll();
@@ -164,7 +175,7 @@ namespace FightingGame
                 if (autotest) ai1.Think(dt, P1, P2, orbs);
                 if (CpuP2) ai2.Think(dt, P2, P1, orbs);
                 IFighterInput in1 = !fighting ? NoInput.Instance : autotest ? ai1 : input1;
-                IFighterInput in2 = !fighting ? NoInput.Instance : CpuP2 ? ai2 : input2;
+                IFighterInput in2 = !fighting ? NoInput.Instance : online.Online ? online.RemoteInput : CpuP2 ? ai2 : input2;
                 P1.Tick(dt, in1, P2);
                 P2.Tick(dt, in2, P1);
                 Separate();
@@ -186,7 +197,7 @@ namespace FightingGame
             var kb = Keyboard.current;
             if (kb == null) return;
             if (kb[Key.F1].wasPressedThisFrame) ShowHitboxes = !ShowHitboxes;
-            if (kb[Key.Digit2].wasPressedThisFrame) CpuP2 = !CpuP2;
+            if (!online.Online && kb[Key.Digit2].wasPressedThisFrame) CpuP2 = !CpuP2;
             if (kb[Key.R].wasPressedThisFrame) StartMatch();
             if (phase == Phase.Over && (kb[Key.Enter].wasPressedThisFrame || kb[Key.NumpadEnter].wasPressedThisFrame)) StartMatch();
         }
@@ -250,7 +261,7 @@ namespace FightingGame
             light.range = 6;
             light.intensity = 4;
             orbs.Add(new Orb { Go = go, Halo = halo, Owner = f, Dir = f.Facing });
-            sfx.Play(Sfx.Kind.Orb);
+            if (online == null || !online.Online || online.IsHost) sfx.Play(Sfx.Kind.Orb);
         }
 
         Transform Glow(PrimitiveType type, Transform parent, float size, Color c)
@@ -359,7 +370,7 @@ namespace FightingGame
                 Shadowed(new Rect(pad, 110 * s, w - pad * 2, 40 * s), $"{comboOwner.Combo} HIT COMBO!", comboStyle, new Color(1f, 0.82f, 0.25f), s);
             }
 
-            string mode = CpuP2 ? "CPU" : "P2";
+            string mode = online.Online ? "ONLINE" : CpuP2 ? "CPU" : "P2";
             GUI.color = new Color(0, 0, 0, 0.55f);
             var helpRect = new Rect(pad * 0.6f, h - 78 * s, 640 * s, 64 * s);
             GUI.DrawTexture(helpRect, Texture2D.whiteTexture);
@@ -465,6 +476,35 @@ namespace FightingGame
             helpStyle.normal.textColor = new Color(0.82f, 0.86f, 1f);
             debugStyle.fontSize = Mathf.RoundToInt(13 * s);
             buttonStyle.fontSize = Mathf.RoundToInt(16 * s);
+        }
+
+        public void BeginOnlineMatch() { CpuP2 = false; autotest = false; StartMatch(); }
+        public void EndOnlineMatch() { CpuP2 = true; StartMatch(); }
+        public MatchSnapshot CaptureSnapshot() {
+            var shots = new OrbSnapshot[orbs.Count];
+            for (int i=0; i<shots.Length; i++) shots[i] = new OrbSnapshot { x=orbs[i].Go.transform.position.x, y=orbs[i].Go.transform.position.y, owner=orbs[i].Owner==P1 ? 0 : 1, dir=orbs[i].Dir };
+            return new MatchSnapshot { fighters=new[] {P1.CaptureNetwork(), P2.CaptureNetwork()}, orbs=shots,
+                phase=(int)phase, round=round, w1=wins[0], w2=wins[1], timer=timer, clock=clock,
+                text=bigText, sub=subText, color=bigColor, comboHide=comboHide, comboOwner=comboOwner==P1 ? 0 : 1 };
+        }
+        public void ApplySnapshot(MatchSnapshot s) {
+            CpuP2=false;
+            for(int i=0; i<2; i++) {
+                var f=i==0 ? P1 : P2;
+                if (s.fighters[i].hp < f.HP) { fx.Spark(new Vector3(s.fighters[i].x, s.fighters[i].y+1.5f,0), Color.yellow, 12, 1); sfx.Play(Sfx.Kind.Hit); }
+                f.ApplyNetwork(s.fighters[i]);
+            }
+            phase=(Phase)s.phase; round=s.round; wins[0]=s.w1; wins[1]=s.w2; timer=s.timer; clock=s.clock;
+            bigText=s.text; subText=phase==Phase.Over ? "Host can start a rematch" : s.sub; bigColor=s.color;
+            comboHide=s.comboHide; comboOwner=s.comboOwner==0 ? P1 : P2;
+            int count=s.orbs==null ? 0 : s.orbs.Length;
+            while(orbs.Count>count) RemoveOrb(orbs[orbs.Count-1]);
+            for(int i=0; i<count; i++) {
+                var shot=s.orbs[i]; var owner=shot.owner==0 ? P1 : P2;
+                if(i>=orbs.Count) FireOrb(owner);
+                orbs[i].Owner=owner; orbs[i].Dir=shot.dir;
+                orbs[i].Go.transform.position=new Vector3(shot.x,shot.y,0);
+            }
         }
 
         // ---------- Autotest ----------
