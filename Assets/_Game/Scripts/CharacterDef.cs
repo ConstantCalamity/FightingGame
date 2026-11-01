@@ -7,6 +7,7 @@ namespace FightingGame
     public class CharacterDef : ScriptableObject
     {
         public string id;
+        public bool dualFlails;
         public GameObject prefab;
         public AnimationClip[] clips;
         public string weaponBone = "weapon";

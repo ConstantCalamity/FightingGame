@@ -275,7 +275,7 @@ namespace FightingGame
             a = b = default; radius = 0; active = false;
             if (State != FState.Attack || Move == null || !Move.HasHitbox) return false;
             active = T >= Move.Startup && T < Move.Startup + Move.Active;
-            if (View != null && View.GetBlade(out a, out b, out _))
+            if (View != null && View.GetFlailOrBlade(Def.dualFlails && Move.Id == "Heavy", out a, out b, out _))
             {
                 radius = Def.bladeRadius;
                 return true;
@@ -293,7 +293,9 @@ namespace FightingGame
                 GetHitbox(out var a, out var b, out var r, out var active) && active && op.State != FState.KO)
             {
                 bool hit = op.Overlaps(a, b, r, out var contact);
-                if (!hit && View != null && View.GetBlade(out _, out var tip, out var prevTip))
+                if (!hit && Def.dualFlails && Move.Id == "Special" && View.GetFlailOrBlade(true, out var la, out var lb, out _))
+                    hit = op.Overlaps(la, lb, r, out contact);
+                if (!hit && !Def.dualFlails && View != null && View.GetBlade(out _, out var tip, out var prevTip))
                     hit = op.Overlaps(prevTip, tip, r, out contact);   // fast swings: the tip's path between frames
                 if (hit)
                 {

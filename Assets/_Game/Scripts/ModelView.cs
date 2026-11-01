@@ -54,14 +54,24 @@ namespace FightingGame
 
         /// <summary>The blade as a 2D segment in the stage plane, sampled from the animated weapon bones.</summary>
         public bool GetBlade(out Vector2 baseP, out Vector2 tipP, out Vector2 prevTip)
+            => GetFlailOrBlade(false, out baseP, out tipP, out prevTip);
+
+        public bool GetFlailOrBlade(bool left, out Vector2 baseP, out Vector2 tipP, out Vector2 prevTip)
         {
             baseP = tipP = prevTip = default;
             if (Weapon == null || WeaponTip == null) return false;
-            Vector3 grip = Weapon.position, tip = WeaponTip.position;
+            Transform selectedTip = left ? FindFlailTip(model) : WeaponTip;
+            if (selectedTip == null) return false;
+            Vector3 grip = Weapon.position, tip = selectedTip.position;
             Vector3 b = grip + (tip - grip).normalized * def.bladeStart;
-            baseP = b; tipP = tip;
-            prevTip = hasLastTip ? lastTip : tipP;
+            baseP = def.dualFlails ? (Vector2)tip : (Vector2)b; tipP = tip;
+            prevTip = def.dualFlails ? tipP : hasLastTip ? lastTip : tipP;
             return true;
+        }
+
+        static Transform FindFlailTip(Transform root) {
+            foreach (var t in root.GetComponentsInChildren<Transform>()) if(t.name == "weapon_tip_left") return t;
+            return null;
         }
 
         /// <summary>Remember where the tip was this frame, so the next frame can test the arc it swept.</summary>

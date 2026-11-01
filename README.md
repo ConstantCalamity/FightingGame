@@ -82,3 +82,11 @@ The host simulates combat. The guest sends buffered inputs; the host sends fight
 Build with **Fighting Game > Build Windows (dev)**. Test with two copies on separate devices and networks, including invalid codes, a third player attempting to join, host departure, guest departure, and rehosting. Same-machine testing verifies Relay connectivity but does not replace a real two-network latency test.
 
 Development builds also accept `-network-smoke -host-code-file <path> -network-report <path>` for an automated host, or `-network-smoke -join-code <code> -network-report <path>` for a guest that walks toward the host and attacks. These tests exit after 40 seconds and write match state to the requested report path. Do not use the same report file for both processes.
+
+### Mordran the Flesh Eater (prototype)
+
+Added on `feature/dual-flail-fighter`: a heavy dual-flail fighter with an original cage helmet, asymmetric shoulder plates, red scarred flesh, and broken knives, swords and spearheads embedded across his back. Each hand carries its own chain and spiked iron ball. Both balls are animated independently; light attacks use the right ball, heavy attacks use the left, and Twin Ruin can connect with either ball once per attack.
+
+Moves: Chain Lash (light), Iron Requiem (heavy), Twin Ruin (50 meter), Falling Judgment (air). These are provisional gameplay values and this first art/animation pass still needs player feedback and balance testing. Chains use authored animation rather than runtime rigid-body simulation so attack timing stays consistent online.
+
+Regenerate art with Blender: `blender -b --factory-startup -P Tools/Blender/build_mordran.py`. Then run **Fighting Game → Rebuild Content (characters + maps)**. The generator creates the model source, FBX, compact textures and all 12 action clips. `MordranValidation.BuildAndVerify` verifies registry/clip/marker/moveset integration and builds the Windows player in batch mode.

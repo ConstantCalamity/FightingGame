@@ -15,6 +15,7 @@ MonoBehaviour:
   movesets: {fileID: 4900000, guid: 58a18e61499a4fd45bb5871e09e1df5b, type: 3}
   characters:
   - {fileID: 11400000, guid: 75f20a24ba91bfa42b1e38f1cf0c61e5, type: 2}
+  - {fileID: 11400000, guid: 4d2bdfd3a9db2574a82c3d2af4c53e48, type: 2}
   - {fileID: 11400000, guid: 955bf80a5eb999547a8289029f81bd73, type: 2}
   maps:
   - {fileID: 11400000, guid: 483a5472e0742d44b9997bc1474076f9, type: 2}

@@ -58,6 +58,142 @@
           "damage": 7, "hitstun": 0.3, "push": 2.5, "meterGain": 7,
           "hitbox": { "p0": [0.35, 1.0], "p1": [1.35, 0.25], "radius": 0.15 } }
       ]
+    },
+    {
+      "id": "Mordran",
+      "displayName": "MORDRAN",
+      "title": "The Flesh Eater",
+      "hp": 125,
+      "walkSpeed": 1.9,
+      "backSpeed": 1.4,
+      "jumpSpeed": 7.5,
+      "pushboxWidth": 0.9,
+      "hurtboxes": [
+        {
+          "name": "head",
+          "center": [
+            0.02,
+            1.9440000000000002
+          ],
+          "size": [
+            0.45999999999999996,
+            0.36
+          ]
+        },
+        {
+          "name": "torso",
+          "center": [
+            0.0,
+            1.4040000000000001
+          ],
+          "size": [
+            0.713,
+            0.66
+          ]
+        },
+        {
+          "name": "legs",
+          "center": [
+            0.0,
+            0.54
+          ],
+          "size": [
+            0.644,
+            1.0
+          ]
+        }
+      ],
+      "moves": [
+        {
+          "id": "Light",
+          "name": "Chain Lash",
+          "startupF": 8,
+          "activeF": 5,
+          "recoveryF": 13,
+          "damage": 9,
+          "hitstun": 0.38,
+          "push": 4,
+          "meterGain": 8,
+          "hitbox": {
+            "p0": [
+              0.6,
+              1.1
+            ],
+            "p1": [
+              1.15,
+              1.15
+            ],
+            "radius": 0.22
+          }
+        },
+        {
+          "id": "Heavy",
+          "name": "Iron Requiem",
+          "startupF": 16,
+          "activeF": 7,
+          "recoveryF": 23,
+          "damage": 19,
+          "hitstun": 0.55,
+          "push": 4,
+          "meterGain": 8,
+          "hitbox": {
+            "p0": [
+              0.6,
+              1.1
+            ],
+            "p1": [
+              1.15,
+              1.15
+            ],
+            "radius": 0.22
+          }
+        },
+        {
+          "id": "Special",
+          "name": "Twin Ruin",
+          "startupF": 20,
+          "activeF": 8,
+          "recoveryF": 25,
+          "cost": 50,
+          "damage": 16,
+          "hitstun": 0.55,
+          "push": 4,
+          "meterGain": 8,
+          "hitbox": {
+            "p0": [
+              0.6,
+              1.1
+            ],
+            "p1": [
+              1.15,
+              1.15
+            ],
+            "radius": 0.22
+          }
+        },
+        {
+          "id": "Air",
+          "name": "Falling Judgment",
+          "startupF": 6,
+          "activeF": 7,
+          "recoveryF": 15,
+          "damage": 11,
+          "hitstun": 0.38,
+          "push": 4,
+          "meterGain": 8,
+          "hitbox": {
+            "p0": [
+              0.6,
+              1.1
+            ],
+            "p1": [
+              1.15,
+              1.15
+            ],
+            "radius": 0.22
+          }
+        }
+      ]
     }
   ]
 }

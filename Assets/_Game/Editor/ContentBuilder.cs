@@ -24,6 +24,7 @@ namespace FightingGame.EditorTools
         static readonly CharStyle[] Characters =
         {
             new CharStyle { id = "Corvin", trail = new Color(1.1f, 0.4f, 0.1f), accent = new Color(1f, 0.45f, 0.12f), bladeStart = 0.19f, bladeRadius = 0.09f },
+            new CharStyle { id = "Mordran", trail = new Color(.8f,.25f,.08f), accent = new Color(.8f,.3f,.12f), bladeStart = 0f, bladeRadius = .20f },
             new CharStyle { id = "Isolde", trail = new Color(0.6f, 0.65f, 0.8f), accent = new Color(0.85f, 0.15f, 0.18f), bladeStart = 0.12f, bladeRadius = 0.07f },
         };
 
@@ -80,6 +81,7 @@ namespace FightingGame.EditorTools
 
             var def = LoadOrCreate<CharacterDef>($"{ContentDir}/{id}.asset");
             def.id = id;
+            def.dualFlails = id == "Mordran";
             def.prefab = AssetDatabase.LoadAssetAtPath<GameObject>(fbx);
             def.clips = AssetDatabase.LoadAllAssetsAtPath(fbx).OfType<AnimationClip>()
                 .Where(c => !c.name.StartsWith("__preview__")).ToArray();
