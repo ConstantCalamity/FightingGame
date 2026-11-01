@@ -38,7 +38,7 @@ Open **Fighting Game → Open Fight Scene** in Unity and press Play. Pick fighte
 
 ### Characters
 
-- **Corvin, the Ashbound Knight** — slow, heavy greatsword. *Cleave* (diagonal slash), *Grave Slam*
+- **Caedryn, the Ashbound Knight** — slow, heavy greatsword. *Cleave* (diagonal slash), *Grave Slam*
   (overhead slam with armor during its startup), *Ashen Wave* (ground-travelling fire, jump over it),
   *Plunging Strike* in the air.
 - **Isolde, the Thornwall Blade** — fast, long-reaching left-handed rapier. *Thrust*, *Fleche* (lunge that

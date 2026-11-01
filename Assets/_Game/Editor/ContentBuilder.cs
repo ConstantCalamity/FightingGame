@@ -161,7 +161,7 @@ namespace FightingGame.EditorTools
 
             var lay = JsonUtility.FromJson<Layout>(File.ReadAllText($"{dir}/layout.json"));
             var def = LoadOrCreate<MapDef>($"{ContentDir}/Map_{name}.asset");
-            def.displayName = Nice(name);
+            def.displayName = name == "CinderCathedral" ? "Ashenfell" : Nice(name);
             def.prefab = AssetDatabase.LoadAssetAtPath<GameObject>(fbx);
             if (lay.sun != null)
             {
