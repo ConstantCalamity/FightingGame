@@ -81,6 +81,34 @@ namespace FightingGame
             Meter = Mathf.Min(100, Meter + amount);
         }
 
+        // ---------- Online (the host simulates; the guest only displays snapshots) ----------
+
+        public FighterSnapshot CaptureNetwork() => new FighterSnapshot
+        {
+            x = X, y = Y, vx = VX, vy = VY, hp = HP, lag = LagHP, meter = Meter, guard = Guard, t = T, comboT = ComboT,
+            flash = Flash, stun = Stun, meterFlash = MeterFlash, facing = Facing, state = (int)State, combo = Combo,
+            move = Move != null ? Move.Id : "", guardBroken = GuardBroken,
+        };
+
+        public void ApplyNetwork(FighterSnapshot s)
+        {
+            X = s.x; Y = s.y; VX = s.vx; VY = s.vy; HP = s.hp; LagHP = s.lag; Meter = s.meter; Guard = s.guard; T = s.t;
+            ComboT = s.comboT; Flash = s.flash; Stun = s.stun; MeterFlash = s.meterFlash; Facing = s.facing;
+            State = (FState)s.state; Combo = s.combo; GuardBroken = s.guardBroken;
+            Move = string.IsNullOrEmpty(s.move) ? null : Data.Move(s.move);
+            if (State == FState.Attack && Move == null) State = FState.Idle;
+        }
+
+        /// <summary>Guest side: carry the last snapshot forward so animation and movement stay smooth between updates.</summary>
+        public void Extrapolate(float dt)
+        {
+            T += dt;
+            X = Mathf.Clamp(X + VX * dt, -StageHalfWidth, StageHalfWidth);
+            if (!Grounded) { VY -= Gravity * dt; Y = Mathf.Max(0, Y + VY * dt); }
+            Flash = Mathf.Max(0, Flash - dt);
+            MeterFlash = Mathf.Max(0, MeterFlash - dt);
+        }
+
         void SetState(FState s) { State = s; T = 0; }
 
         bool StartMove(string id)

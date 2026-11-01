@@ -12,6 +12,8 @@ namespace FightingGame
         public int Dir;
         public float Life;
         public float TrailTimer;
+        /// <summary>Host-assigned id so an online guest can match snapshots to the projectiles it already shows.</summary>
+        public int NetId;
 
         public float X => Go.transform.position.x;
         public Vector2 Pos2D => Go.transform.position;

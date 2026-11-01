@@ -29,6 +29,16 @@ namespace FightingGame
 
         Dictionary<string, CharacterData> characterData;
         readonly List<Projectile> projectiles = new List<Projectile>();
+        int nextProjectileId;
+
+        // online versus: the host simulates and streams snapshots; the guest only displays them
+        OnlineMatch online;
+        readonly List<FxEvent> netEvents = new List<FxEvent>();
+        bool Online => online != null && online.Online;
+        bool Hosting => Online && online.IsHost && online.Ready;
+        bool Guest => Online && !online.IsHost;
+        public bool InSelect => phase == Phase.Select;
+
         HumanInput input1, input2;
         AIController ai2, ai1;
         Effects fx;
@@ -133,9 +143,15 @@ namespace FightingGame
             camLook = new Vector3(0, 1.2f, 0);
             if (autotest)
             {
+                Application.runInBackground = true;   // keep simulating if the test window loses focus
                 ShowHitboxes = true;
                 autotestStart = Time.realtimeSinceStartup;
                 BeginMatch();
+            }
+            else
+            {
+                online = gameObject.AddComponent<OnlineMatch>();
+                online.Initialize(this);
             }
         }
 
@@ -247,6 +263,8 @@ namespace FightingGame
             phase = Phase.Intro; phaseT = 0; timer = RoundTime; winner = null; fightShown = false;
             timeScale = 1; slowmoT = 0;
             input1.ClearBuffer(); input2.ClearBuffer();
+            online?.RemoteInput.Clear();
+            freeze = shakeAmt = comboHide = 0;
             Announce($"ROUND {round}");
         }
 
@@ -300,6 +318,8 @@ namespace FightingGame
         void Update()
         {
             float real = Mathf.Min(Time.unscaledDeltaTime, 1f / 20f);
+            if (online != null) online.PollClient();
+            if (Guest) { GuestUpdate(real); return; }
             HandleMetaKeys();
             input1.Poll();
             input2.Poll();
@@ -339,7 +359,7 @@ namespace FightingGame
                 if (autotest) ai1.Think(dt, P1, P2, projectiles);
                 if (CpuP2) ai2.Think(dt, P2, P1, projectiles);
                 IFighterInput in1 = !fighting ? NoInput.Instance : autotest ? ai1 : input1;
-                IFighterInput in2 = !fighting ? NoInput.Instance : CpuP2 ? ai2 : input2;
+                IFighterInput in2 = !fighting ? NoInput.Instance : Hosting ? online.RemoteInput : CpuP2 ? ai2 : input2;
                 P1.Tick(dt, in1, P2);
                 P2.Tick(dt, in2, P1);
                 Separate();
@@ -369,7 +389,7 @@ namespace FightingGame
             var kb = Keyboard.current;
             if (kb == null) return;
             if (kb[Key.F1].wasPressedThisFrame) ShowHitboxes = !ShowHitboxes;
-            if (kb[Key.Digit2].wasPressedThisFrame) CpuP2 = !CpuP2;
+            if (!Online && kb[Key.Digit2].wasPressedThisFrame) CpuP2 = !CpuP2;
             if (phase == Phase.Select) return;
             if (kb[Key.R].wasPressedThisFrame) { wins[0] = wins[1] = 0; round = 1; StartRound(); }
             if (kb[Key.Escape].wasPressedThisFrame) GoToSelect();
@@ -415,53 +435,115 @@ namespace FightingGame
         }
 
         // ---------- Combat callbacks ----------
+        // Fighters report events here on the simulating machine. Hitstop, slow-mo and match flow stay local;
+        // everything you see and hear goes through ShowFx, which a host also forwards to the online guest.
+
+        enum FxKind { Hit, Block, Parry, GuardBreak, Armor, KO, Clash }
+
+        int Index(Fighter f) => f == P1 ? 0 : 1;
+        Fighter ByIndex(int i) => i == 0 ? P1 : P2;
 
         public void OnHit(Fighter victim, Fighter attacker, MoveData m, Vector3 pos)
         {
-            bool heavy = m.Damage > 9;
-            Color c = m.Id == "Projectile" ? attacker.Accent * 1.6f : new Color(1.6f, 1.0f, 0.3f);
-            var away = new Vector3(Mathf.Sign(victim.X - attacker.X), 0.35f, 0);
-            fx.Spark(pos, c, heavy ? 30 : 18, heavy ? 1.4f : 1f, away);
-            Hitstop(heavy ? 0.1f : 0.06f);
-            Shake(m.Damage * 0.02f);
-            sfx.Play(heavy ? Sfx.Kind.Heavy : Sfx.Kind.Hit);
+            Hitstop(m.Damage > 9 ? 0.1f : 0.06f);
+            ShowFx(FxKind.Hit, pos, Index(attacker), m.Damage, m.Id == "Projectile");
             if (attacker.Combo >= 2) { comboOwner = attacker; comboHide = 1.2f; }
         }
 
         /// <summary>wear: 0 for a fresh block, toward 1 for one held a long time (sparks get hotter and heavier).</summary>
         public void OnBlock(Vector3 pos, float wear)
         {
-            var c = Color.Lerp(new Color(0.6f, 0.85f, 1.3f), new Color(1.6f, 0.7f, 0.2f), wear);
-            fx.Spark(pos, c, 8 + Mathf.RoundToInt(14 * wear), 0.6f + 0.5f * wear);
             Hitstop(0.04f + 0.03f * wear);
-            Shake(0.04f + 0.1f * wear);
-            sfx.Play(Sfx.Kind.Block);
+            ShowFx(FxKind.Block, pos, 0, wear);
         }
 
         public void OnParry(Fighter defender, Fighter attacker, Vector3 pos)
         {
             // the payoff: a steel clash, sparks flying off the blades, a beat of stillness, then slow-mo
-            fx.ClashSparks(pos, defender.Facing);
             Hitstop(0.16f);
             timeScale = 0.45f; slowmoT = 0.32f;
-            Shake(0.16f);
-            sfx.Play(Sfx.Kind.Parry);
-            Popup("PARRY!", defender, new Color(1f, 0.86f, 0.35f));
+            ShowFx(FxKind.Parry, pos, Index(defender));
             EventShot("parry");
             Debug.Log($"[combat] PARRY by {defender.Data.Id}");
         }
 
         public void OnGuardBreak(Fighter f, Vector3 pos)
         {
-            fx.Spark(pos, new Color(0.9f, 1.2f, 1.8f), 36, 1.5f, new Vector3(0, 0.5f, 0));
-            fx.Ring(pos, new Color(1.8f, 0.3f, 0.2f), 0.3f, 5f, 0.3f, 0.1f);
-            fx.FlashLight(pos + Vector3.back * 0.4f, new Color(0.7f, 0.8f, 1f), 10f, 5f, 0.15f);
             Hitstop(0.12f);
-            Shake(0.35f);
-            sfx.Play(Sfx.Kind.GuardBreak);
-            Popup("GUARD BREAK!", f, new Color(1f, 0.3f, 0.25f));
+            ShowFx(FxKind.GuardBreak, pos, Index(f));
             EventShot("guardbreak");
             Debug.Log($"[combat] GUARD BREAK on {f.Data.Id}");
+        }
+
+        public void OnArmor(Fighter f, Vector3 pos)
+        {
+            Hitstop(0.05f);
+            ShowFx(FxKind.Armor, pos, Index(f));
+        }
+
+        public void OnKO(Fighter loser)
+        {
+            ShowFx(FxKind.KO, new Vector3(loser.X, loser.Y + 1, 0), Index(loser));
+            if (phase != Phase.Fight) return;
+            phase = Phase.KO; phaseT = 0;
+            winner = loser == P1 ? P2 : P1;
+            timeScale = 0.3f; slowmoT = 1.2f;
+            Announce("K.O.", "", new Color(1f, 0.88f, 0.3f));
+        }
+
+        /// <summary>Sparks, sounds, shake and popups for a combat event. who/value/flag depend on the kind.</summary>
+        void ShowFx(FxKind kind, Vector3 pos, int who = 0, float value = 0, bool flag = false)
+        {
+            var f = ByIndex(who);
+            switch (kind)
+            {
+                case FxKind.Hit:            // who = attacker, value = damage, flag = projectile
+                {
+                    bool heavy = value > 9;
+                    var victim = ByIndex(1 - who);
+                    Color c = flag ? f.Accent * 1.6f : new Color(1.6f, 1.0f, 0.3f);
+                    fx.Spark(pos, c, heavy ? 30 : 18, heavy ? 1.4f : 1f, new Vector3(Mathf.Sign(victim.X - f.X), 0.35f, 0));
+                    Shake(value * 0.02f);
+                    sfx.Play(heavy ? Sfx.Kind.Heavy : Sfx.Kind.Hit);
+                    break;
+                }
+                case FxKind.Block:          // value = block wear
+                    fx.Spark(pos, Color.Lerp(new Color(0.6f, 0.85f, 1.3f), new Color(1.6f, 0.7f, 0.2f), value),
+                             8 + Mathf.RoundToInt(14 * value), 0.6f + 0.5f * value);
+                    Shake(0.04f + 0.1f * value);
+                    sfx.Play(Sfx.Kind.Block);
+                    break;
+                case FxKind.Parry:          // who = defender
+                    fx.ClashSparks(pos, f.Facing);
+                    Shake(0.16f);
+                    sfx.Play(Sfx.Kind.Parry);
+                    Popup("PARRY!", f, new Color(1f, 0.86f, 0.35f));
+                    break;
+                case FxKind.GuardBreak:     // who = the fighter whose guard broke
+                    fx.Spark(pos, new Color(0.9f, 1.2f, 1.8f), 36, 1.5f, new Vector3(0, 0.5f, 0));
+                    fx.Ring(pos, new Color(1.8f, 0.3f, 0.2f), 0.3f, 5f, 0.3f, 0.1f);
+                    fx.FlashLight(pos + Vector3.back * 0.4f, new Color(0.7f, 0.8f, 1f), 10f, 5f, 0.15f);
+                    Shake(0.35f);
+                    sfx.Play(Sfx.Kind.GuardBreak);
+                    Popup("GUARD BREAK!", f, new Color(1f, 0.3f, 0.25f));
+                    break;
+                case FxKind.Armor:
+                    fx.Spark(pos, new Color(1.4f, 0.9f, 0.5f), 10, 0.8f);
+                    Shake(0.1f);
+                    sfx.Play(Sfx.Kind.Block);
+                    break;
+                case FxKind.KO:
+                    Shake(0.35f);
+                    sfx.Play(Sfx.Kind.KO);
+                    break;
+                case FxKind.Clash:          // two projectiles cancelling out
+                    fx.Spark(pos, Color.white * 1.5f, 20, 1.2f);
+                    Shake(0.15f);
+                    sfx.Play(Sfx.Kind.Heavy);
+                    break;
+            }
+            if (Hosting)
+                netEvents.Add(new FxEvent { kind = (int)kind, x = pos.x, y = pos.y, z = pos.z, who = who, value = value, flag = flag });
         }
 
         // ---------- floating combat text ----------
@@ -470,25 +552,6 @@ namespace FightingGame
         readonly List<PopupText> popups = new List<PopupText>();
 
         void Popup(string text, Fighter who, Color c) => popups.Add(new PopupText { Text = text, Who = who, Color = c, Life = 0.9f });
-
-        public void OnArmor(Fighter f, Vector3 pos)
-        {
-            fx.Spark(pos, new Color(1.4f, 0.9f, 0.5f), 10, 0.8f);
-            Hitstop(0.05f);
-            Shake(0.1f);
-            sfx.Play(Sfx.Kind.Block);
-        }
-
-        public void OnKO(Fighter loser)
-        {
-            sfx.Play(Sfx.Kind.KO);
-            if (phase != Phase.Fight) return;
-            phase = Phase.KO; phaseT = 0;
-            winner = loser == P1 ? P2 : P1;
-            timeScale = 0.3f; slowmoT = 1.2f;
-            Shake(0.35f);
-            Announce("K.O.", "", new Color(1f, 0.88f, 0.3f));
-        }
 
         void Hitstop(float t) => freeze = Mathf.Max(freeze, t);
         void Shake(float a) => shakeAmt = Mathf.Max(shakeAmt, a);
@@ -499,7 +562,7 @@ namespace FightingGame
         {
             var go = new GameObject("Projectile_" + spec.Style);
             go.transform.position = new Vector3(f.X + f.Facing * spec.SpawnX, f.Y + spec.Height, 0);
-            var p = new Projectile { Go = go, Owner = f, Spec = spec, Dir = f.Facing, Life = spec.Life };
+            var p = new Projectile { Go = go, Owner = f, Spec = spec, Dir = f.Facing, Life = spec.Life, NetId = ++nextProjectileId };
             if (spec.Style == "knife" && f.Def.projectilePrefab)
             {
                 var spin = new GameObject("Spin").transform;
@@ -546,9 +609,7 @@ namespace FightingGame
                 var other = projectiles.Find(q => q.Owner != p.Owner && Mathf.Abs(q.X - pos.x) < q.Spec.Radius + p.Spec.Radius);
                 if (other != null)
                 {
-                    fx.Spark(pos, Color.white * 1.5f, 20, 1.2f);
-                    Shake(0.15f);
-                    sfx.Play(Sfx.Kind.Heavy);
+                    ShowFx(FxKind.Clash, pos);
                     RemoveProjectile(p);
                     RemoveProjectile(other);
                     continue;
@@ -624,7 +685,7 @@ namespace FightingGame
                 Shadowed(new Rect(pad, 118 * s, w - pad * 2, 40 * s), $"{comboOwner.Combo} HIT COMBO!", comboStyle, new Color(1f, 0.82f, 0.25f), s);
             }
 
-            string mode = CpuP2 ? "CPU" : "P2";
+            string mode = Online ? "ONLINE" : CpuP2 ? "CPU" : "P2";
             GUI.color = new Color(0, 0, 0, 0.55f);
             var helpRect = new Rect(pad * 0.6f, h - 96 * s, 680 * s, 82 * s);
             GUI.DrawTexture(helpRect, Texture2D.whiteTexture);
@@ -668,10 +729,11 @@ namespace FightingGame
         void DrawSelect(float w, float h, float s)
         {
             Fill(new Rect(0, 0, w, h), new Color(0, 0, 0, 0.2f));
-            Shadowed(new Rect(0, 24 * s, w, 70 * s), "CHOOSE YOUR FIGHTERS", bigStyle, Color.white, s * 2);
+            Shadowed(new Rect(0, 24 * s, w, 70 * s), Guest ? "HOST IS CHOOSING" : "CHOOSE YOUR FIGHTERS", bigStyle, Color.white, s * 2);
+            GUI.enabled = !Guest;    // online, the host picks both fighters and the stage
             float cw = 330 * s, ch = 200 * s, cy = 110 * s;
             Card(new Rect(w * 0.17f - cw / 2, cy, cw, ch), "PLAYER 1", content.characters[pick1], "A / D", ref pick1, s);
-            Card(new Rect(w * 0.83f - cw / 2, cy, cw, ch), CpuP2 ? "CPU" : "PLAYER 2", content.characters[pick2], "← / →", ref pick2, s);
+            Card(new Rect(w * 0.83f - cw / 2, cy, cw, ch), Online ? "ONLINE PLAYER" : CpuP2 ? "CPU" : "PLAYER 2", content.characters[pick2], "← / →", ref pick2, s);
 
             var stageRect = new Rect(w / 2 - 260 * s, h - 250 * s, 520 * s, 70 * s);
             Fill(stageRect, new Color(0.05f, 0.06f, 0.1f, 0.85f));
@@ -684,8 +746,9 @@ namespace FightingGame
 
             if (GUI.Button(new Rect(w / 2 - 120 * s, stageRect.yMax + 18 * s, 240 * s, 52 * s), "FIGHT  (Enter)", buttonStyle))
                 BeginMatch();
-            if (GUI.Button(new Rect(w / 2 - 120 * s, stageRect.yMax + 78 * s, 240 * s, 34 * s), CpuP2 ? "P2: CPU  (2)" : "P2: Human  (2)", buttonStyle))
+            if (!Online && GUI.Button(new Rect(w / 2 - 120 * s, stageRect.yMax + 78 * s, 240 * s, 34 * s), CpuP2 ? "P2: CPU  (2)" : "P2: Human  (2)", buttonStyle))
                 CpuP2 = !CpuP2;
+            GUI.enabled = true;
         }
 
         void Card(Rect r, string who, CharacterDef def, string keys, ref int pick, float s)
@@ -706,7 +769,7 @@ namespace FightingGame
         void DrawSide(Fighter f, int idx, Rect bar, float s, bool right)
         {
             nameStyle.alignment = right ? TextAnchor.LowerRight : TextAnchor.LowerLeft;
-            string label = f == P2 ? $"{f.DisplayName} ({(CpuP2 ? "CPU" : "P2")})" : f.DisplayName;
+            string label = f == P2 ? $"{f.DisplayName} ({(Online ? "ONLINE" : CpuP2 ? "CPU" : "P2")})" : f.DisplayName;
             Shadowed(new Rect(bar.x, bar.y - 28 * s, bar.width, 24 * s), label, nameStyle, Color.white, s);
 
             for (int n = 0; n < 2; n++)
@@ -805,6 +868,126 @@ namespace FightingGame
             debugStyle.fontSize = Mathf.RoundToInt(13 * s);
             buttonStyle.fontSize = Mathf.RoundToInt(16 * s);
             cardStyle.fontSize = Mathf.RoundToInt(34 * s);
+        }
+
+        // ---------- Online versus ----------
+
+        /// <summary>The guest connected: start a match with the host's current fighters and stage.</summary>
+        public void BeginOnlineMatch() { CpuP2 = false; autotest = false; BeginMatch(); }
+
+        public void EndOnlineMatch()
+        {
+            CpuP2 = true;
+            freeze = 0; timeScale = 1; slowmoT = 0;
+            netEvents.Clear();
+            GoToSelect();
+        }
+
+        /// <summary>Host: everything the guest needs to draw the match. drainEvents=false peeks without consuming.</summary>
+        public MatchSnapshot CaptureSnapshot(bool drainEvents = true)
+        {
+            if (P1 == null || P2 == null) return null;
+            var shots = new ProjectileSnapshot[projectiles.Count];
+            for (int i = 0; i < shots.Length; i++)
+            {
+                var p = projectiles[i];
+                var pos = p.Go.transform.position;
+                shots[i] = new ProjectileSnapshot { id = p.NetId, x = pos.x, y = pos.y, owner = Index(p.Owner), dir = p.Dir, style = p.Spec.Style };
+            }
+            var snap = new MatchSnapshot
+            {
+                fighters = new[] { P1.CaptureNetwork(), P2.CaptureNetwork() }, projectiles = shots, events = netEvents.ToArray(),
+                p1 = shown1, p2 = shown2, map = shownMap, phase = (int)phase, round = round, w1 = wins[0], w2 = wins[1],
+                timer = timer, clock = clock, freeze = freeze, timeScale = timeScale,
+                text = bigText, sub = subText, color = bigColor, comboHide = comboHide, comboOwner = comboOwner == P2 ? 1 : 0,
+            };
+            if (drainEvents) netEvents.Clear();
+            return snap;
+        }
+
+        /// <summary>Guest: adopt the host's state, then replay the hits, parries and other events it reported.</summary>
+        public void ApplySnapshot(MatchSnapshot s)
+        {
+            CpuP2 = false;
+            pick1 = Mathf.Clamp(s.p1, 0, content.characters.Length - 1);
+            pick2 = Mathf.Clamp(s.p2, 0, content.characters.Length - 1);
+            pickMap = Mathf.Clamp(s.map, 0, MapCount - 1);
+            if (P1 == null || pick1 != shown1 || pick2 != shown2) SpawnFighters();
+            if (pickMap != shownMap) LoadMap(pickMap);
+            P1.ApplyNetwork(s.fighters[0]);
+            P2.ApplyNetwork(s.fighters[1]);
+
+            phase = (Phase)s.phase; round = s.round; wins[0] = s.w1; wins[1] = s.w2;
+            timer = s.timer; clock = s.clock; freeze = s.freeze; timeScale = s.timeScale;
+            bigText = s.text; bigColor = s.color;
+            subText = phase == Phase.Over ? "Waiting for the host to start a rematch" : s.sub;
+            comboHide = s.comboHide; comboOwner = ByIndex(s.comboOwner);
+
+            var shots = s.projectiles ?? new ProjectileSnapshot[0];
+            for (int i = projectiles.Count - 1; i >= 0; i--)
+                if (System.Array.FindIndex(shots, q => q.id == projectiles[i].NetId) < 0) RemoveProjectile(projectiles[i]);
+            foreach (var shot in shots)
+            {
+                var p = projectiles.Find(q => q.NetId == shot.id);
+                if (p == null)
+                {
+                    var owner = ByIndex(shot.owner);
+                    var spec = SpecByStyle(owner, shot.style);
+                    if (spec == null) continue;
+                    FireProjectile(owner, spec);
+                    p = projectiles[projectiles.Count - 1];
+                    p.NetId = shot.id;
+                }
+                p.Dir = shot.dir;
+                p.Go.transform.position = new Vector3(shot.x, shot.y, 0);
+            }
+
+            if (s.events != null)
+                foreach (var e in s.events) ShowFx((FxKind)e.kind, new Vector3(e.x, e.y, e.z), e.who, e.value, e.flag);
+        }
+
+        static ProjectileSpec SpecByStyle(Fighter f, string style)
+        {
+            foreach (var m in f.Data.Moves.Values)
+                if (m.Projectile != null && m.Projectile.Style == style) return m.Projectile;
+            return null;
+        }
+
+        /// <summary>Online guest: no simulation. Carry the host's last snapshot forward between updates and draw it.</summary>
+        void GuestUpdate(float real)
+        {
+            var kb = Keyboard.current;
+            if (kb != null && kb[Key.F1].wasPressedThisFrame) ShowHitboxes = !ShowHitboxes;
+            if (P1 == null || P2 == null) return;
+            if (phase == Phase.Select)
+            {
+                clock += real;
+                P1.UpdateVisual(real, real);
+                P2.UpdateVisual(real, real);
+                UpdateCamera(real, false);
+                return;
+            }
+
+            float dt = 0;
+            if (freeze > 0) freeze -= real;
+            else dt = real * timeScale;
+            P1.Extrapolate(dt);
+            P2.Extrapolate(dt);
+            foreach (var p in projectiles)
+            {
+                var pos = p.Go.transform.position;
+                pos.x += p.Dir * p.Spec.Speed * dt;
+                p.Go.transform.position = pos;
+                if (p.Spin) p.Spin.Rotate(0, 1400 * dt, 0, Space.Self);
+            }
+            if (comboHide > 0) comboHide -= real;
+            for (int i = popups.Count - 1; i >= 0; i--)
+                if ((popups[i].Life -= real) <= 0) popups.RemoveAt(i);
+            P1.UpdateVisual(dt, real);
+            P2.UpdateVisual(dt, real);
+            fx.Tick(real);
+            UpdateCamera(real, false);
+            debugView.Tick(ShowHitboxes, P1, P2, projectiles);
         }
 
         // ---------- Autotest ----------
