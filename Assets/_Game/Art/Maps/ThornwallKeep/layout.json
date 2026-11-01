@@ -1,0 +1,307 @@
+{
+  "_notes": "Positions in Blender coordinates (metres, Z up); Unity = (-x, z, -y). Colours are sRGB (as typed in Unity's inspector). sun.direction_deg = Unity directional-light Euler [pitch(X), yaw(Y)]; sun.direction_blender = the light's travel direction in Blender axes. Fog is linear (Unity RenderSettings.fogMode = Linear). Point-light intensity is Unity URP intensity; range in metres. fx.scale ~1 = one torch/brazier-sized fire.",
+  "sun": {
+    "direction_deg": [
+      48.0,
+      32.0
+    ],
+    "direction_blender": [
+      -0.3546,
+      -0.5675,
+      -0.7431
+    ],
+    "color": [
+      0.871,
+      0.902,
+      0.957
+    ],
+    "intensity": 1.05
+  },
+  "ambient": {
+    "sky": [
+      0.588,
+      0.627,
+      0.698
+    ],
+    "equator": [
+      0.486,
+      0.51,
+      0.549
+    ],
+    "ground": [
+      0.329,
+      0.337,
+      0.361
+    ]
+  },
+  "fog": {
+    "color": [
+      0.69,
+      0.722,
+      0.769
+    ],
+    "start": 10.0,
+    "end": 280.0
+  },
+  "background": [
+    0.69,
+    0.722,
+    0.769
+  ],
+  "pointLights": [
+    {
+      "pos": [
+        -3.1,
+        -19.14,
+        4.22
+      ],
+      "color": [
+        1.0,
+        0.588,
+        0.282
+      ],
+      "intensity": 2.6,
+      "range": 8.0
+    },
+    {
+      "pos": [
+        3.1,
+        -19.14,
+        4.22
+      ],
+      "color": [
+        1.0,
+        0.588,
+        0.282
+      ],
+      "intensity": 2.6,
+      "range": 8.0
+    },
+    {
+      "pos": [
+        -13.2,
+        -9.4,
+        1.6
+      ],
+      "color": [
+        1.0,
+        0.533,
+        0.235
+      ],
+      "intensity": 3.6,
+      "range": 10.0
+    },
+    {
+      "pos": [
+        8.9,
+        -3.45,
+        3.0
+      ],
+      "color": [
+        1.0,
+        0.588,
+        0.282
+      ],
+      "intensity": 3.2,
+      "range": 9.0
+    },
+    {
+      "pos": [
+        -8.9,
+        -3.45,
+        3.0
+      ],
+      "color": [
+        1.0,
+        0.588,
+        0.282
+      ],
+      "intensity": 3.2,
+      "range": 9.0
+    },
+    {
+      "pos": [
+        14.0,
+        -6.03,
+        3.12
+      ],
+      "color": [
+        1.0,
+        0.588,
+        0.282
+      ],
+      "intensity": 2.6,
+      "range": 8.0
+    },
+    {
+      "pos": [
+        -12.0,
+        -5.31,
+        2.82
+      ],
+      "color": [
+        1.0,
+        0.588,
+        0.282
+      ],
+      "intensity": 2.6,
+      "range": 8.0
+    },
+    {
+      "pos": [
+        7.664,
+        -17.385,
+        5.02
+      ],
+      "color": [
+        1.0,
+        0.588,
+        0.282
+      ],
+      "intensity": 2.6,
+      "range": 8.0
+    },
+    {
+      "pos": [
+        -7.664,
+        -17.385,
+        5.02
+      ],
+      "color": [
+        1.0,
+        0.588,
+        0.282
+      ],
+      "intensity": 2.6,
+      "range": 8.0
+    }
+  ],
+  "fx": [
+    {
+      "type": "fire",
+      "pos": [
+        -3.1,
+        -19.14,
+        3.97
+      ],
+      "scale": 0.8
+    },
+    {
+      "type": "fire",
+      "pos": [
+        3.1,
+        -19.14,
+        3.97
+      ],
+      "scale": 0.8
+    },
+    {
+      "type": "fire",
+      "pos": [
+        -13.2,
+        -10.3,
+        1.05
+      ],
+      "scale": 1.2
+    },
+    {
+      "type": "embers",
+      "pos": [
+        -13.2,
+        -10.3,
+        1.6
+      ],
+      "scale": 0.8
+    },
+    {
+      "type": "fire",
+      "pos": [
+        8.9,
+        -3.45,
+        2.65
+      ],
+      "scale": 1.0
+    },
+    {
+      "type": "embers",
+      "pos": [
+        8.9,
+        -3.45,
+        3.1
+      ],
+      "scale": 0.6
+    },
+    {
+      "type": "fire",
+      "pos": [
+        -8.9,
+        -3.45,
+        2.65
+      ],
+      "scale": 1.0
+    },
+    {
+      "type": "embers",
+      "pos": [
+        -8.9,
+        -3.45,
+        3.1
+      ],
+      "scale": 0.6
+    },
+    {
+      "type": "fire",
+      "pos": [
+        14.0,
+        -6.03,
+        2.87
+      ],
+      "scale": 0.8
+    },
+    {
+      "type": "fire",
+      "pos": [
+        -12.0,
+        -5.31,
+        2.57
+      ],
+      "scale": 0.8
+    },
+    {
+      "type": "fire",
+      "pos": [
+        7.664,
+        -17.385,
+        4.77
+      ],
+      "scale": 0.8
+    },
+    {
+      "type": "fire",
+      "pos": [
+        -7.664,
+        -17.385,
+        4.77
+      ],
+      "scale": 0.8
+    },
+    {
+      "type": "snow",
+      "pos": [
+        0.0,
+        -1.0,
+        12.0
+      ],
+      "scale": 30.0
+    },
+    {
+      "type": "snow",
+      "pos": [
+        0.0,
+        -30.0,
+        22.0
+      ],
+      "scale": 70.0
+    }
+  ]
+}

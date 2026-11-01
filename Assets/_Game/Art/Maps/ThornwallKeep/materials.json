@@ -1,0 +1,186 @@
+[
+  {
+    "material": "M_Stone",
+    "albedo": "T_Stone_Albedo.png",
+    "normal": "T_Stone_Normal.png",
+    "mask": "T_Stone_Mask.png",
+    "tiling": 2.0,
+    "tint": [
+      1,
+      1,
+      1
+    ],
+    "emission": null,
+    "emissionIntensity": 0.0,
+    "smoothnessScale": 1.0,
+    "uvPrescaled": true,
+    "uvSpace": "metres",
+    "emissionMap": null
+  },
+  {
+    "material": "M_StoneWall",
+    "albedo": "T_StoneWall_Albedo.png",
+    "normal": "T_StoneWall_Normal.png",
+    "mask": "T_StoneWall_Mask.png",
+    "tiling": 4.0,
+    "tint": [
+      1,
+      1,
+      1
+    ],
+    "emission": null,
+    "emissionIntensity": 0.0,
+    "smoothnessScale": 1.0,
+    "uvPrescaled": true,
+    "uvSpace": "metres",
+    "emissionMap": null
+  },
+  {
+    "material": "M_Cobble",
+    "albedo": "T_Cobble_Albedo.png",
+    "normal": "T_Cobble_Normal.png",
+    "mask": "T_Cobble_Mask.png",
+    "tiling": 6.0,
+    "tint": [
+      1,
+      1,
+      1
+    ],
+    "emission": null,
+    "emissionIntensity": 0.0,
+    "smoothnessScale": 1.0,
+    "uvPrescaled": true,
+    "uvSpace": "metres",
+    "emissionMap": null
+  },
+  {
+    "material": "M_Snow",
+    "albedo": "T_Snow_Albedo.png",
+    "normal": "T_Snow_Normal.png",
+    "mask": "T_Snow_Mask.png",
+    "tiling": 3.0,
+    "tint": [
+      1,
+      1,
+      1
+    ],
+    "emission": null,
+    "emissionIntensity": 0.0,
+    "smoothnessScale": 1.0,
+    "uvPrescaled": true,
+    "uvSpace": "metres",
+    "emissionMap": null
+  },
+  {
+    "material": "M_Wood",
+    "albedo": "T_Wood_Albedo.png",
+    "normal": "T_Wood_Normal.png",
+    "mask": "T_Wood_Mask.png",
+    "tiling": 2.0,
+    "tint": [
+      1,
+      1,
+      1
+    ],
+    "emission": null,
+    "emissionIntensity": 0.0,
+    "smoothnessScale": 1.0,
+    "uvPrescaled": true,
+    "uvSpace": "metres",
+    "emissionMap": null
+  },
+  {
+    "material": "M_Iron",
+    "albedo": "T_Iron_Albedo.png",
+    "normal": "T_Iron_Normal.png",
+    "mask": "T_Iron_Mask.png",
+    "tiling": 1.0,
+    "tint": [
+      1,
+      1,
+      1
+    ],
+    "emission": null,
+    "emissionIntensity": 0.0,
+    "smoothnessScale": 1.0,
+    "uvPrescaled": true,
+    "uvSpace": "metres",
+    "emissionMap": null
+  },
+  {
+    "material": "M_Banner",
+    "albedo": "T_Banner_Albedo.png",
+    "normal": "T_Banner_Normal.png",
+    "mask": "T_Banner_Mask.png",
+    "tiling": 2.0,
+    "tint": [
+      1,
+      1,
+      1
+    ],
+    "emission": null,
+    "emissionIntensity": 0.0,
+    "smoothnessScale": 1.0,
+    "uvPrescaled": true,
+    "uvSpace": "normalized",
+    "emissionMap": null
+  },
+  {
+    "material": "M_Straw",
+    "albedo": "T_Straw_Albedo.png",
+    "normal": "T_Straw_Normal.png",
+    "mask": "T_Straw_Mask.png",
+    "tiling": 1.5,
+    "tint": [
+      1,
+      1,
+      1
+    ],
+    "emission": null,
+    "emissionIntensity": 0.0,
+    "smoothnessScale": 1.0,
+    "uvPrescaled": true,
+    "uvSpace": "metres",
+    "emissionMap": null
+  },
+  {
+    "material": "M_Plaster",
+    "albedo": "T_Plaster_Albedo.png",
+    "normal": "T_Plaster_Normal.png",
+    "mask": "T_Plaster_Mask.png",
+    "tiling": 2.0,
+    "tint": [
+      1,
+      1,
+      1
+    ],
+    "emission": null,
+    "emissionIntensity": 0.0,
+    "smoothnessScale": 1.0,
+    "uvPrescaled": true,
+    "uvSpace": "metres",
+    "emissionMap": null
+  },
+  {
+    "material": "M_Fire",
+    "albedo": "T_Fire_Albedo.png",
+    "normal": "T_Fire_Normal.png",
+    "mask": "T_Fire_Mask.png",
+    "tiling": 0.6,
+    "tint": [
+      1,
+      1,
+      1
+    ],
+    "emission": [
+      1.0,
+      0.549,
+      0.2353
+    ],
+    "emissionIntensity": 6.0,
+    "smoothnessScale": 1.0,
+    "uvPrescaled": true,
+    "uvSpace": "metres",
+    "emissionMap": "T_Fire_Albedo.png"
+  }
+]

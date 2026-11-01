@@ -45,3 +45,10 @@ Thumbs.db
 
 # Local Claude Code settings
 .claude/settings.local.json
+
+# Blender autosave/backup
+*.blend1
+*.blend@
+
+# Python caches from the Blender scripts
+__pycache__/

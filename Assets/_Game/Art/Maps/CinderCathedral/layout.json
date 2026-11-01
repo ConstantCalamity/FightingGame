@@ -1,0 +1,351 @@
+{
+  "_notes": "Positions in Blender coordinates (metres, Z up); Unity = (-x, z, -y). Colours are sRGB (as typed in Unity's inspector). sun.direction_deg = Unity directional-light Euler [pitch(X), yaw(Y)]; sun.direction_blender = the light's travel direction in Blender axes. Fog is linear (Unity RenderSettings.fogMode = Linear). Point-light intensity is Unity URP intensity; range in metres. fx.scale ~1 = one brazier-sized fire.",
+  "sun": {
+    "direction_deg": [
+      18.0,
+      200.0
+    ],
+    "direction_blender": [
+      0.3253,
+      0.8937,
+      -0.309
+    ],
+    "color": [
+      1.0,
+      0.612,
+      0.376
+    ],
+    "intensity": 1.8
+  },
+  "ambient": {
+    "sky": [
+      0.282,
+      0.314,
+      0.392
+    ],
+    "equator": [
+      0.353,
+      0.329,
+      0.353
+    ],
+    "ground": [
+      0.133,
+      0.122,
+      0.125
+    ]
+  },
+  "fog": {
+    "color": [
+      0.518,
+      0.447,
+      0.416
+    ],
+    "start": 10.0,
+    "end": 270.0
+  },
+  "background": [
+    0.518,
+    0.447,
+    0.416
+  ],
+  "pointLights": [
+    {
+      "pos": [
+        10.9,
+        -1.2,
+        2.0
+      ],
+      "color": [
+        1.0,
+        0.533,
+        0.235
+      ],
+      "intensity": 3.2,
+      "range": 9.0
+    },
+    {
+      "pos": [
+        -10.9,
+        -1.3,
+        2.0
+      ],
+      "color": [
+        1.0,
+        0.533,
+        0.235
+      ],
+      "intensity": 3.2,
+      "range": 9.0
+    },
+    {
+      "pos": [
+        4.4,
+        -3.7,
+        1.755
+      ],
+      "color": [
+        1.0,
+        0.533,
+        0.235
+      ],
+      "intensity": 2.8800000000000003,
+      "range": 8.1
+    },
+    {
+      "pos": [
+        -4.4,
+        -3.7,
+        1.755
+      ],
+      "color": [
+        1.0,
+        0.533,
+        0.235
+      ],
+      "intensity": 2.8800000000000003,
+      "range": 8.1
+    },
+    {
+      "pos": [
+        -1.5,
+        -7.0,
+        1.6
+      ],
+      "color": [
+        1.0,
+        0.431,
+        0.157
+      ],
+      "intensity": 1.6,
+      "range": 5.0
+    },
+    {
+      "pos": [
+        5.6,
+        -6.9,
+        1.2
+      ],
+      "color": [
+        1.0,
+        0.431,
+        0.157
+      ],
+      "intensity": 1.2,
+      "range": 4.0
+    },
+    {
+      "pos": [
+        -9.0,
+        -18.5,
+        3.0
+      ],
+      "color": [
+        1.0,
+        0.51,
+        0.216
+      ],
+      "intensity": 5.0,
+      "range": 16.0
+    }
+  ],
+  "fx": [
+    {
+      "type": "fire",
+      "pos": [
+        -22,
+        -55,
+        1.2
+      ],
+      "scale": 2.0
+    },
+    {
+      "type": "embers",
+      "pos": [
+        -22,
+        -55,
+        3.0
+      ],
+      "scale": 2.0
+    },
+    {
+      "type": "fire",
+      "pos": [
+        24,
+        -78,
+        1.2
+      ],
+      "scale": 2.0
+    },
+    {
+      "type": "embers",
+      "pos": [
+        24,
+        -78,
+        3.0
+      ],
+      "scale": 2.0
+    },
+    {
+      "type": "fire",
+      "pos": [
+        -48,
+        -96,
+        1.2
+      ],
+      "scale": 2.0
+    },
+    {
+      "type": "embers",
+      "pos": [
+        -48,
+        -96,
+        3.0
+      ],
+      "scale": 2.0
+    },
+    {
+      "type": "fire",
+      "pos": [
+        6,
+        -70,
+        1.2
+      ],
+      "scale": 2.0
+    },
+    {
+      "type": "embers",
+      "pos": [
+        6,
+        -70,
+        3.0
+      ],
+      "scale": 2.0
+    },
+    {
+      "type": "fire",
+      "pos": [
+        10.9,
+        -1.2,
+        1.43
+      ],
+      "scale": 1.0
+    },
+    {
+      "type": "embers",
+      "pos": [
+        10.9,
+        -1.2,
+        1.85
+      ],
+      "scale": 1.0
+    },
+    {
+      "type": "fire",
+      "pos": [
+        -10.9,
+        -1.3,
+        1.43
+      ],
+      "scale": 1.0
+    },
+    {
+      "type": "embers",
+      "pos": [
+        -10.9,
+        -1.3,
+        1.85
+      ],
+      "scale": 1.0
+    },
+    {
+      "type": "fire",
+      "pos": [
+        4.4,
+        -3.7,
+        1.242
+      ],
+      "scale": 0.9
+    },
+    {
+      "type": "embers",
+      "pos": [
+        4.4,
+        -3.7,
+        1.62
+      ],
+      "scale": 0.9
+    },
+    {
+      "type": "fire",
+      "pos": [
+        -4.4,
+        -3.7,
+        1.242
+      ],
+      "scale": 0.9
+    },
+    {
+      "type": "embers",
+      "pos": [
+        -4.4,
+        -3.7,
+        1.62
+      ],
+      "scale": 0.9
+    },
+    {
+      "type": "embers",
+      "pos": [
+        -1.5,
+        -7.6,
+        1.3
+      ],
+      "scale": 1.5
+    },
+    {
+      "type": "embers",
+      "pos": [
+        5.5,
+        -7.4,
+        1.0
+      ],
+      "scale": 1.0
+    },
+    {
+      "type": "fire",
+      "pos": [
+        -9.0,
+        -19.0,
+        1.4
+      ],
+      "scale": 2.2
+    },
+    {
+      "type": "embers",
+      "pos": [
+        -9.0,
+        -19.0,
+        3.5
+      ],
+      "scale": 2.0
+    },
+    {
+      "type": "ash",
+      "pos": [
+        0.0,
+        -1.0,
+        9.0
+      ],
+      "scale": 22.0
+    },
+    {
+      "type": "ash",
+      "pos": [
+        0.0,
+        -18.0,
+        14.0
+      ],
+      "scale": 40.0
+    }
+  ]
+}

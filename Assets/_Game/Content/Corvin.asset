@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8262445934297a45aaea83387f9fc11, type: 3}
+  m_Name: Corvin
+  m_EditorClassIdentifier: Assembly-CSharp::FightingGame.CharacterDef
+  id: Corvin
+  prefab: {fileID: 919132149155446097, guid: 848f361f3375be54b8b06f19689507a2, type: 3}
+  clips:
+  - {fileID: -3931738519872044664, guid: 848f361f3375be54b8b06f19689507a2, type: 3}
+  - {fileID: -2452547117929850533, guid: 848f361f3375be54b8b06f19689507a2, type: 3}
+  - {fileID: -5935340898213630793, guid: 848f361f3375be54b8b06f19689507a2, type: 3}
+  - {fileID: 3341008991451901215, guid: 848f361f3375be54b8b06f19689507a2, type: 3}
+  - {fileID: -429512112410174799, guid: 848f361f3375be54b8b06f19689507a2, type: 3}
+  - {fileID: -8790922266539588141, guid: 848f361f3375be54b8b06f19689507a2, type: 3}
+  - {fileID: 7628040685771394586, guid: 848f361f3375be54b8b06f19689507a2, type: 3}
+  - {fileID: 322059383863168677, guid: 848f361f3375be54b8b06f19689507a2, type: 3}
+  - {fileID: -5962603214710103436, guid: 848f361f3375be54b8b06f19689507a2, type: 3}
+  - {fileID: -1948625558078596852, guid: 848f361f3375be54b8b06f19689507a2, type: 3}
+  - {fileID: -4587673313234318044, guid: 848f361f3375be54b8b06f19689507a2, type: 3}
+  - {fileID: -4531431723682095299, guid: 848f361f3375be54b8b06f19689507a2, type: 3}
+  weaponBone: weapon
+  weaponTipBone: weapon_tip
+  bladeStart: 0.19
+  bladeRadius: 0.09
+  capeBones:
+  - cape.1
+  - cape.2
+  - cape.3
+  - cape.4
+  trailColor: {r: 1.1, g: 0.4, b: 0.1, a: 1}
+  accent: {r: 1, g: 0.45, b: 0.12, a: 1}
+  projectilePrefab: {fileID: 0}
+  emberAura: 1

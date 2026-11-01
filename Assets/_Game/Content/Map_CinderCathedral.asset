@@ -1,0 +1,122 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8a2f69b16c2b2c439f7bcf619faa100, type: 3}
+  m_Name: Map_CinderCathedral
+  m_EditorClassIdentifier: Assembly-CSharp::FightingGame.MapDef
+  displayName: Cinder Cathedral
+  prefab: {fileID: 919132149155446097, guid: 1f1e0b07192c24b4091b671d6933498d, type: 3}
+  sunEuler: {x: 18, y: 200, z: 0}
+  sunColor: {r: 1, g: 0.612, b: 0.376, a: 1}
+  sunIntensity: 1.8
+  ambientSky: {r: 0.282, g: 0.314, b: 0.392, a: 1}
+  ambientEquator: {r: 0.353, g: 0.329, b: 0.353, a: 1}
+  ambientGround: {r: 0.133, g: 0.122, b: 0.125, a: 1}
+  fogColor: {r: 0.518, g: 0.447, b: 0.416, a: 1}
+  fogStart: 10
+  fogEnd: 270
+  background: {r: 0.518, g: 0.447, b: 0.416, a: 1}
+  pointLights:
+  - position: {x: -10.9, y: 2, z: 1.2}
+    color: {r: 1, g: 0.533, b: 0.235, a: 1}
+    intensity: 3.2
+    range: 9
+  - position: {x: 10.9, y: 2, z: 1.3}
+    color: {r: 1, g: 0.533, b: 0.235, a: 1}
+    intensity: 3.2
+    range: 9
+  - position: {x: -4.4, y: 1.755, z: 3.7}
+    color: {r: 1, g: 0.533, b: 0.235, a: 1}
+    intensity: 2.88
+    range: 8.1
+  - position: {x: 4.4, y: 1.755, z: 3.7}
+    color: {r: 1, g: 0.533, b: 0.235, a: 1}
+    intensity: 2.88
+    range: 8.1
+  - position: {x: 1.5, y: 1.6, z: 7}
+    color: {r: 1, g: 0.431, b: 0.157, a: 1}
+    intensity: 1.6
+    range: 5
+  - position: {x: -5.6, y: 1.2, z: 6.9}
+    color: {r: 1, g: 0.431, b: 0.157, a: 1}
+    intensity: 1.2
+    range: 4
+  - position: {x: 9, y: 3, z: 18.5}
+    color: {r: 1, g: 0.51, b: 0.216, a: 1}
+    intensity: 5
+    range: 16
+  fx:
+  - type: fire
+    position: {x: 22, y: 1.2, z: 55}
+    scale: 2
+  - type: embers
+    position: {x: 22, y: 3, z: 55}
+    scale: 2
+  - type: fire
+    position: {x: -24, y: 1.2, z: 78}
+    scale: 2
+  - type: embers
+    position: {x: -24, y: 3, z: 78}
+    scale: 2
+  - type: fire
+    position: {x: 48, y: 1.2, z: 96}
+    scale: 2
+  - type: embers
+    position: {x: 48, y: 3, z: 96}
+    scale: 2
+  - type: fire
+    position: {x: -6, y: 1.2, z: 70}
+    scale: 2
+  - type: embers
+    position: {x: -6, y: 3, z: 70}
+    scale: 2
+  - type: fire
+    position: {x: -10.9, y: 1.43, z: 1.2}
+    scale: 1
+  - type: embers
+    position: {x: -10.9, y: 1.85, z: 1.2}
+    scale: 1
+  - type: fire
+    position: {x: 10.9, y: 1.43, z: 1.3}
+    scale: 1
+  - type: embers
+    position: {x: 10.9, y: 1.85, z: 1.3}
+    scale: 1
+  - type: fire
+    position: {x: -4.4, y: 1.242, z: 3.7}
+    scale: 0.9
+  - type: embers
+    position: {x: -4.4, y: 1.62, z: 3.7}
+    scale: 0.9
+  - type: fire
+    position: {x: 4.4, y: 1.242, z: 3.7}
+    scale: 0.9
+  - type: embers
+    position: {x: 4.4, y: 1.62, z: 3.7}
+    scale: 0.9
+  - type: embers
+    position: {x: 1.5, y: 1.3, z: 7.6}
+    scale: 1.5
+  - type: embers
+    position: {x: -5.5, y: 1, z: 7.4}
+    scale: 1
+  - type: fire
+    position: {x: 9, y: 1.4, z: 19}
+    scale: 2.2
+  - type: embers
+    position: {x: 9, y: 3.5, z: 19}
+    scale: 2
+  - type: ash
+    position: {x: -0, y: 9, z: 1}
+    scale: 22
+  - type: ash
+    position: {x: -0, y: 14, z: 18}
+    scale: 40

@@ -1,0 +1,63 @@
+{
+  "fps": 30,
+  "characters": [
+    {
+      "id": "Corvin",
+      "displayName": "CORVIN",
+      "title": "The Ashbound Knight",
+      "hp": 115,
+      "walkSpeed": 2.1,
+      "backSpeed": 1.6,
+      "jumpSpeed": 8.0,
+      "pushboxWidth": 0.8,
+      "hurtboxes": [
+        { "name": "head",  "center": [0.02, 1.80], "size": [0.40, 0.36] },
+        { "name": "torso", "center": [0.00, 1.30], "size": [0.62, 0.66] },
+        { "name": "legs",  "center": [0.00, 0.50], "size": [0.56, 1.00] }
+      ],
+      "moves": [
+        { "id": "Light", "name": "Cleave", "startupF": 6, "activeF": 3, "recoveryF": 9,
+          "damage": 8, "hitstun": 0.32, "push": 3.2, "meterGain": 8,
+          "hitbox": { "p0": [0.55, 1.25], "p1": [1.95, 1.15], "radius": 0.28 } },
+        { "id": "Heavy", "name": "Grave Slam", "startupF": 14, "activeF": 3, "recoveryF": 16,
+          "damage": 17, "hitstun": 0.6, "push": 6.0, "meterGain": 12, "armor": true,
+          "hitbox": { "p0": [0.7, 1.0], "p1": [1.85, 0.1], "radius": 0.32 } },
+        { "id": "Special", "name": "Ashen Wave", "startupF": 12, "activeF": 2, "recoveryF": 13, "cost": 50,
+          "projectile": { "style": "ashwave", "speed": 7.0, "height": 0.45, "radius": 0.42, "spawnX": 1.05,
+                          "damage": 13, "hitstun": 0.45, "push": 4.5, "life": 1.7 } },
+        { "id": "Air", "name": "Plunging Strike", "startupF": 3, "activeF": 9, "recoveryF": 6,
+          "damage": 10, "hitstun": 0.36, "push": 3.0, "meterGain": 9, "diveSpeed": 7.0,
+          "hitbox": { "p0": [0.35, 0.5], "p1": [0.55, -0.55], "radius": 0.3 } }
+      ]
+    },
+    {
+      "id": "Isolde",
+      "displayName": "ISOLDE",
+      "title": "The Thornwall Blade",
+      "hp": 92,
+      "walkSpeed": 2.3,
+      "backSpeed": 1.9,
+      "jumpSpeed": 9.0,
+      "pushboxWidth": 0.66,
+      "hurtboxes": [
+        { "name": "head",  "center": [0.02, 1.64], "size": [0.34, 0.32] },
+        { "name": "torso", "center": [0.00, 1.20], "size": [0.50, 0.60] },
+        { "name": "legs",  "center": [0.00, 0.46], "size": [0.48, 0.92] }
+      ],
+      "moves": [
+        { "id": "Light", "name": "Thrust", "startupF": 3, "activeF": 2, "recoveryF": 6,
+          "damage": 5, "hitstun": 0.28, "push": 2.4, "meterGain": 7,
+          "hitbox": { "p0": [0.9, 1.38], "p1": [1.95, 1.36], "radius": 0.13 } },
+        { "id": "Heavy", "name": "Fleche", "startupF": 7, "activeF": 6, "recoveryF": 10,
+          "damage": 11, "hitstun": 0.45, "push": 4.5, "meterGain": 10, "lungeSpeed": 7.5,
+          "hitbox": { "p0": [1.0, 1.25], "p1": [2.15, 1.18], "radius": 0.15 } },
+        { "id": "Special", "name": "Throwing Knife", "startupF": 6, "activeF": 2, "recoveryF": 8, "cost": 30,
+          "projectile": { "style": "knife", "speed": 15.0, "height": 1.4, "radius": 0.15, "spawnX": 0.6,
+                          "damage": 6, "hitstun": 0.3, "push": 2.0, "life": 1.2 } },
+        { "id": "Air", "name": "Falling Cut", "startupF": 3, "activeF": 4, "recoveryF": 6,
+          "damage": 7, "hitstun": 0.3, "push": 2.5, "meterGain": 7,
+          "hitbox": { "p0": [0.35, 1.0], "p1": [1.35, 0.25], "radius": 0.15 } }
+      ]
+    }
+  ]
+}

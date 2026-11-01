@@ -1,0 +1,190 @@
+[
+  {
+    "material": "M_Stone",
+    "albedo": "T_Stone_Albedo.png",
+    "normal": "T_Stone_Normal.png",
+    "mask": "T_Stone_Mask.png",
+    "tiling": 2.0,
+    "tint": [
+      1,
+      1,
+      1
+    ],
+    "emission": null,
+    "emissionIntensity": 0.0,
+    "smoothnessScale": 1.0,
+    "uvPrescaled": true,
+    "uvSpace": "metres",
+    "emissionMap": null
+  },
+  {
+    "material": "M_StoneBrick",
+    "albedo": "T_StoneBrick_Albedo.png",
+    "normal": "T_StoneBrick_Normal.png",
+    "mask": "T_StoneBrick_Mask.png",
+    "tiling": 4.0,
+    "tint": [
+      1,
+      1,
+      1
+    ],
+    "emission": null,
+    "emissionIntensity": 0.0,
+    "smoothnessScale": 1.0,
+    "uvPrescaled": true,
+    "uvSpace": "metres",
+    "emissionMap": null
+  },
+  {
+    "material": "M_Floor",
+    "albedo": "T_Floor_Albedo.png",
+    "normal": "T_Floor_Normal.png",
+    "mask": "T_Floor_Mask.png",
+    "tiling": 6.0,
+    "tint": [
+      1,
+      1,
+      1
+    ],
+    "emission": null,
+    "emissionIntensity": 0.0,
+    "smoothnessScale": 1.0,
+    "uvPrescaled": true,
+    "uvSpace": "metres",
+    "emissionMap": null
+  },
+  {
+    "material": "M_Ash",
+    "albedo": "T_Ash_Albedo.png",
+    "normal": "T_Ash_Normal.png",
+    "mask": "T_Ash_Mask.png",
+    "tiling": 3.0,
+    "tint": [
+      1,
+      1,
+      1
+    ],
+    "emission": null,
+    "emissionIntensity": 0.0,
+    "smoothnessScale": 1.0,
+    "uvPrescaled": true,
+    "uvSpace": "metres",
+    "emissionMap": null
+  },
+  {
+    "material": "M_Iron",
+    "albedo": "T_Iron_Albedo.png",
+    "normal": "T_Iron_Normal.png",
+    "mask": "T_Iron_Mask.png",
+    "tiling": 1.0,
+    "tint": [
+      1,
+      1,
+      1
+    ],
+    "emission": null,
+    "emissionIntensity": 0.0,
+    "smoothnessScale": 1.0,
+    "uvPrescaled": true,
+    "uvSpace": "metres",
+    "emissionMap": null
+  },
+  {
+    "material": "M_Bark",
+    "albedo": "T_Bark_Albedo.png",
+    "normal": "T_Bark_Normal.png",
+    "mask": "T_Bark_Mask.png",
+    "tiling": 2.0,
+    "tint": [
+      1,
+      1,
+      1
+    ],
+    "emission": null,
+    "emissionIntensity": 0.0,
+    "smoothnessScale": 1.0,
+    "uvPrescaled": true,
+    "uvSpace": "metres",
+    "emissionMap": null
+  },
+  {
+    "material": "M_Bone",
+    "albedo": "T_Bone_Albedo.png",
+    "normal": "T_Bone_Normal.png",
+    "mask": "T_Bone_Mask.png",
+    "tiling": 0.5,
+    "tint": [
+      1,
+      1,
+      1
+    ],
+    "emission": null,
+    "emissionIntensity": 0.0,
+    "smoothnessScale": 1.0,
+    "uvPrescaled": true,
+    "uvSpace": "metres",
+    "emissionMap": null
+  },
+  {
+    "material": "M_Ember",
+    "albedo": "T_Ember_Albedo.png",
+    "normal": "T_Ember_Normal.png",
+    "mask": "T_Ember_Mask.png",
+    "tiling": 0.8,
+    "tint": [
+      1,
+      1,
+      1
+    ],
+    "emission": [
+      1.0,
+      0.4706,
+      0.1765
+    ],
+    "emissionIntensity": 5.0,
+    "smoothnessScale": 1.0,
+    "uvPrescaled": true,
+    "uvSpace": "metres",
+    "emissionMap": "T_Ember_Albedo.png"
+  },
+  {
+    "material": "M_Cloth",
+    "albedo": "T_Cloth_Albedo.png",
+    "normal": "T_Cloth_Normal.png",
+    "mask": "T_Cloth_Mask.png",
+    "tiling": 1.5,
+    "tint": [
+      1,
+      1,
+      1
+    ],
+    "emission": null,
+    "emissionIntensity": 0.0,
+    "smoothnessScale": 1.0,
+    "uvPrescaled": true,
+    "uvSpace": "metres",
+    "emissionMap": null
+  },
+  {
+    "material": "M_Glow",
+    "albedo": "T_Glow_Albedo.png",
+    "normal": "T_Glow_Normal.png",
+    "mask": "T_Glow_Mask.png",
+    "tiling": 2.0,
+    "tint": [
+      1,
+      1,
+      1
+    ],
+    "emission": [
+      1.0,
+      0.5882,
+      0.3137
+    ],
+    "emissionIntensity": 1.6,
+    "smoothnessScale": 1.0,
+    "uvPrescaled": true,
+    "uvSpace": "metres",
+    "emissionMap": "T_Glow_Albedo.png"
+  }
+]

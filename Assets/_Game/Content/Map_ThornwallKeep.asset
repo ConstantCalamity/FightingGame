@@ -1,0 +1,106 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8a2f69b16c2b2c439f7bcf619faa100, type: 3}
+  m_Name: Map_ThornwallKeep
+  m_EditorClassIdentifier: Assembly-CSharp::FightingGame.MapDef
+  displayName: Thornwall Keep
+  prefab: {fileID: 919132149155446097, guid: 606066d622f069643ad84adeda464848, type: 3}
+  sunEuler: {x: 48, y: 32, z: 0}
+  sunColor: {r: 0.871, g: 0.902, b: 0.957, a: 1}
+  sunIntensity: 1.05
+  ambientSky: {r: 0.588, g: 0.627, b: 0.698, a: 1}
+  ambientEquator: {r: 0.486, g: 0.51, b: 0.549, a: 1}
+  ambientGround: {r: 0.329, g: 0.337, b: 0.361, a: 1}
+  fogColor: {r: 0.69, g: 0.722, b: 0.769, a: 1}
+  fogStart: 10
+  fogEnd: 280
+  background: {r: 0.69, g: 0.722, b: 0.769, a: 1}
+  pointLights:
+  - position: {x: 3.1, y: 4.22, z: 19.14}
+    color: {r: 1, g: 0.588, b: 0.282, a: 1}
+    intensity: 2.6
+    range: 8
+  - position: {x: -3.1, y: 4.22, z: 19.14}
+    color: {r: 1, g: 0.588, b: 0.282, a: 1}
+    intensity: 2.6
+    range: 8
+  - position: {x: 13.2, y: 1.6, z: 9.4}
+    color: {r: 1, g: 0.533, b: 0.235, a: 1}
+    intensity: 3.6
+    range: 10
+  - position: {x: -8.9, y: 3, z: 3.45}
+    color: {r: 1, g: 0.588, b: 0.282, a: 1}
+    intensity: 3.2
+    range: 9
+  - position: {x: 8.9, y: 3, z: 3.45}
+    color: {r: 1, g: 0.588, b: 0.282, a: 1}
+    intensity: 3.2
+    range: 9
+  - position: {x: -14, y: 3.12, z: 6.03}
+    color: {r: 1, g: 0.588, b: 0.282, a: 1}
+    intensity: 2.6
+    range: 8
+  - position: {x: 12, y: 2.82, z: 5.31}
+    color: {r: 1, g: 0.588, b: 0.282, a: 1}
+    intensity: 2.6
+    range: 8
+  - position: {x: -7.664, y: 5.02, z: 17.385}
+    color: {r: 1, g: 0.588, b: 0.282, a: 1}
+    intensity: 2.6
+    range: 8
+  - position: {x: 7.664, y: 5.02, z: 17.385}
+    color: {r: 1, g: 0.588, b: 0.282, a: 1}
+    intensity: 2.6
+    range: 8
+  fx:
+  - type: fire
+    position: {x: 3.1, y: 3.97, z: 19.14}
+    scale: 0.8
+  - type: fire
+    position: {x: -3.1, y: 3.97, z: 19.14}
+    scale: 0.8
+  - type: fire
+    position: {x: 13.2, y: 1.05, z: 10.3}
+    scale: 1.2
+  - type: embers
+    position: {x: 13.2, y: 1.6, z: 10.3}
+    scale: 0.8
+  - type: fire
+    position: {x: -8.9, y: 2.65, z: 3.45}
+    scale: 1
+  - type: embers
+    position: {x: -8.9, y: 3.1, z: 3.45}
+    scale: 0.6
+  - type: fire
+    position: {x: 8.9, y: 2.65, z: 3.45}
+    scale: 1
+  - type: embers
+    position: {x: 8.9, y: 3.1, z: 3.45}
+    scale: 0.6
+  - type: fire
+    position: {x: -14, y: 2.87, z: 6.03}
+    scale: 0.8
+  - type: fire
+    position: {x: 12, y: 2.57, z: 5.31}
+    scale: 0.8
+  - type: fire
+    position: {x: -7.664, y: 4.77, z: 17.385}
+    scale: 0.8
+  - type: fire
+    position: {x: 7.664, y: 4.77, z: 17.385}
+    scale: 0.8
+  - type: snow
+    position: {x: -0, y: 12, z: 1}
+    scale: 30
+  - type: snow
+    position: {x: -0, y: 22, z: 30}
+    scale: 70

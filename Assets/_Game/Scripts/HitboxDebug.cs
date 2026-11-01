@@ -15,7 +15,7 @@ namespace FightingGame
         static readonly Color Push = new Color(0.25f, 0.5f, 1f) * 0.7f;
         static readonly Color HitActive = new Color(1f, 0.15f, 0.15f) * 1.5f;
         static readonly Color HitInactive = new Color(1f, 0.8f, 0.2f) * 0.5f;
-        const float Z = -0.6f;
+        const float Z = 0f;   // the fighters' plane; the overlay material draws on top so nothing hides it
 
         readonly Material mat;
         readonly Transform root;
@@ -24,20 +24,20 @@ namespace FightingGame
         readonly MaterialPropertyBlock mpb = new MaterialPropertyBlock();
         int used;
 
-        public HitboxDebug(Material glowTemplate)
+        public HitboxDebug(Material overlay)
         {
-            mat = glowTemplate;
+            mat = overlay;
             root = new GameObject("HitboxDebug").transform;
         }
 
-        public void Tick(bool visible, Fighter a, Fighter b, List<Orb> orbs)
+        public void Tick(bool visible, Fighter a, Fighter b, List<Projectile> projectiles)
         {
             used = 0;
-            if (visible)
+            if (visible && a != null && b != null)
             {
                 DrawFighter(a);
                 DrawFighter(b);
-                foreach (var o in orbs) Circle(o.Pos2D, MoveData.Orb.HitboxRadius, HitActive);
+                foreach (var p in projectiles) Capsule(p.Pos2D, p.Pos2D, p.Spec.Radius, HitActive);
             }
             for (int i = used; i < pool.Count; i++) pool[i].enabled = false;
         }
@@ -47,9 +47,9 @@ namespace FightingGame
             f.GetHurtboxes(rects);
             foreach (var r in rects) Rectangle(r, Hurt);
             if (f.State != FState.KO)
-                Rectangle(new Rect(f.X - Fighter.PushboxWidth / 2, f.Y, Fighter.PushboxWidth, 0.25f), Push);
-            if (f.GetHitbox(out var c, out var radius, out var active))
-                Circle(c, radius, active ? HitActive : HitInactive);
+                Rectangle(new Rect(f.X - f.PushboxWidth / 2, f.Y, f.PushboxWidth, 0.25f), Push);
+            if (f.GetHitbox(out var p0, out var p1, out var radius, out var active))
+                Capsule(p0, p1, radius, active ? HitActive : HitInactive);
         }
 
         void Rectangle(Rect r, Color c)
@@ -61,14 +61,23 @@ namespace FightingGame
             lr.SetPosition(3, new Vector3(r.xMin, r.yMax, Z));
         }
 
-        void Circle(Vector2 centre, float radius, Color c)
+        /// <summary>Outline of a 2D capsule: two half circles joined by straight sides.</summary>
+        void Capsule(Vector2 a, Vector2 b, float radius, Color c)
         {
-            const int n = 24;
-            var lr = Next(c, n);
-            for (int i = 0; i < n; i++)
+            const int half = 12;
+            Vector2 axis = b - a;
+            float ang = axis.sqrMagnitude > 1e-6f ? Mathf.Atan2(axis.y, axis.x) : 0f;
+            var lr = Next(c, (half + 1) * 2);
+            int k = 0;
+            for (int i = 0; i <= half; i++)   // around b (front half)
             {
-                float a = i * Mathf.PI * 2 / n;
-                lr.SetPosition(i, new Vector3(centre.x + Mathf.Cos(a) * radius, centre.y + Mathf.Sin(a) * radius, Z));
+                float t = ang - Mathf.PI / 2 + Mathf.PI * i / half;
+                lr.SetPosition(k++, new Vector3(b.x + Mathf.Cos(t) * radius, b.y + Mathf.Sin(t) * radius, Z));
+            }
+            for (int i = 0; i <= half; i++)   // around a (back half)
+            {
+                float t = ang + Mathf.PI / 2 + Mathf.PI * i / half;
+                lr.SetPosition(k++, new Vector3(a.x + Mathf.Cos(t) * radius, a.y + Mathf.Sin(t) * radius, Z));
             }
         }
 

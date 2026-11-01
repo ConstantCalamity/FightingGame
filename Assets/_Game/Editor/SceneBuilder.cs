@@ -36,8 +36,8 @@ namespace FightingGame.EditorTools
             Directory.CreateDirectory(MatDir);
             Directory.CreateDirectory(Path.GetDirectoryName(ScenePath));
 
-            var lit = SaveMat(LitMaterial(Color.white, 0.5f, Color.black), "FighterLit");
             var glow = SaveMat(GlowMaterial(Color.white), "GlowAdditive");
+            var content = ContentBuilder.Build();
             var stone = SaveMat(LitMaterial(new Color(0.17f, 0.18f, 0.27f), 0.15f, Color.black), "ArenaStone");
             var capCyan = SaveMat(LitMaterial(Cyan, 0.5f, Cyan * 2.5f), "PillarCapCyan");
             var capPink = SaveMat(LitMaterial(Pink, 0.5f, Pink * 2.5f), "PillarCapPink");
@@ -68,7 +68,7 @@ namespace FightingGame.EditorTools
             cam.backgroundColor = Background;
             cam.fieldOfView = 48;
             cam.nearClipPlane = 0.1f;
-            cam.farClipPlane = 300;
+            cam.farClipPlane = 450;   // map backdrops reach ~440 m
             camGo.transform.position = new Vector3(0, 2.6f, -9);
             camGo.transform.LookAt(new Vector3(0, 1.2f, 0));
             var camData = camGo.AddComponent<UniversalAdditionalCameraData>();
@@ -84,6 +84,13 @@ namespace FightingGame.EditorTools
             sun.transform.rotation = Quaternion.Euler(50, -30, 0);
             PointLight("Rim Blue", new Vector3(-9, 4, 5), new Color(0.24f, 0.55f, 1f));
             PointLight("Rim Red", new Vector3(9, 4, 5), new Color(1f, 0.2f, 0.33f));
+            // soft fill from the camera side so the fighters' fronts read against backlit stages
+            var fill = new GameObject("Camera Fill").AddComponent<Light>();
+            fill.type = LightType.Directional;
+            fill.color = new Color(1f, 0.95f, 0.9f);
+            fill.intensity = 0.45f;
+            fill.shadows = LightShadows.None;
+            fill.transform.rotation = Quaternion.Euler(14, 8, 0);
 
             // Post-processing (bloom/tonemapping from the template profile)
             var volume = new GameObject("Global Volume").AddComponent<Volume>();
@@ -130,8 +137,13 @@ namespace FightingGame.EditorTools
             // Game manager
             var game = new GameObject("Game").AddComponent<GameManager>();
             var so = new SerializedObject(game);
-            so.FindProperty("litTemplate").objectReferenceValue = lit;
+            // NewScene unloads assets held only by C# references, so reload the registry by path
+            content = AssetDatabase.LoadAssetAtPath<GameContent>(AssetDatabase.GetAssetPath(content) is string p && p.Length > 0
+                ? p : "Assets/_Game/Content/GameContent.asset") ?? AssetDatabase.LoadAssetAtPath<GameContent>("Assets/_Game/Content/GameContent.asset");
+            so.FindProperty("content").objectReferenceValue = content;
             so.FindProperty("glowTemplate").objectReferenceValue = glow;
+            so.FindProperty("overlayMaterial").objectReferenceValue =
+                SaveMat(new Material(Shader.Find("FightingGame/DebugOverlay")), "DebugOverlay");
             so.FindProperty("cam").objectReferenceValue = cam;
             so.ApplyModifiedPropertiesWithoutUndo();
 

@@ -4,7 +4,7 @@ using UnityEngine.InputSystem.Controls;
 
 namespace FightingGame
 {
-    public enum FAction { Left, Right, Jump, Block, Punch, Kick, Special }
+    public enum FAction { Left, Right, Jump, Block, Light, Heavy, Special }
 
     public interface IFighterInput
     {
@@ -93,8 +93,8 @@ namespace FightingGame
             FAction.Right => new[] { g.dpad.right, g.leftStick.right },
             FAction.Jump => new[] { g.buttonSouth, g.dpad.up },
             FAction.Block => new[] { g.leftShoulder, g.rightShoulder },
-            FAction.Punch => new[] { g.buttonWest },
-            FAction.Kick => new[] { g.buttonNorth },
+            FAction.Light => new[] { g.buttonWest },
+            FAction.Heavy => new[] { g.buttonNorth },
             _ => new[] { g.buttonEast },
         };
     }
